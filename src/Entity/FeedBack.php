@@ -20,9 +20,10 @@ class FeedBack
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'feedback_id')]
+    #[ORM\ManyToOne(targetEntity: User::class , inversedBy: 'feedback_id')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private ?User $user_id = null;
+
 
     public function getId(): ?int
     {
@@ -55,13 +56,15 @@ class FeedBack
 
     public function getUserId(): ?User
     {
-        return $this->user;
+        return $this->user_id;
     }
 
-    public function setUserId(?User $user): static
+    public function setUserId(?User $user_id): static
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
 
         return $this;
     }
+
+
 }

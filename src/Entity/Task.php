@@ -32,9 +32,10 @@ class Task
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'task_id')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class , inversedBy: 'task_id')]
     private ?User $user_id = null;
+
+
 
     public function getId(): ?int
     {
@@ -124,4 +125,7 @@ class Task
 
         return $this;
     }
+
+
+
 }
