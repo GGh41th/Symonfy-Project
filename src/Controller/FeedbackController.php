@@ -7,16 +7,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class ProfileController extends AbstractController
+class FeedbackController extends AbstractController
 {
-    #[Route(path: '/profile', name: 'profil')]
-    public function Profile(AuthenticationUtils $authenticationUtils): Response
+    #[Route(path: '/feedback', name: 'feedback')]
+    public function Feedback(AuthenticationUtils $authenticationUtils): Response
     {
        
 
 
 
-        return $this->render('profile/profile.html.twig');
+        return $this->render('feedback/feedback.html.twig');
     }
 
     
