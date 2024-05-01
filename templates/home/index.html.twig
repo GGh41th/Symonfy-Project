@@ -6,7 +6,7 @@
     <meta name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name = "description" content = ""/>
     <meta name = "author" content = ""/>
-    <title>Creative - Start Bootstrap Theme</title>
+    <title>Task Sphere</title>
     <!-- Favicon-->
     <link rel = "icon" type = "image/x-icon" href ={{ asset("assets/home/assets/favicon.ico") }}/>
     <!-- Bootstrap Icons-->
@@ -34,7 +34,7 @@
             <ul class = "navbar-nav ms-auto my-2 my-lg-0">
                 <li class = "nav-item"><a class = "nav-link" href = "#about">About</a></li>
                 <li class = "nav-item"><a class = "nav-link" href = "#features">Features</a></li>
-                <li class = "nav-item"><a class = "nav-link" href = "#start">Get Started</a></li>
+                <li class = "nav-item"><a class = "nav-link" href = "#start">Log in</a></li>
             </ul>
         </div>
     </div>
@@ -44,13 +44,11 @@
     <div class = "container px-4 px-lg-5 h-100">
         <div class = "row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
             <div class = "col-lg-8 align-self-end">
-                <h1 class = "text-white font-weight-bold">Your Favorite Place for Free Bootstrap Themes</h1>
+                <h1 class = "text-white font-weight-bold">Task Sphere</h1>
                 <hr class = "divider"/>
             </div>
             <div class = "col-lg-8 align-self-baseline">
-                <p class = "text-white-75 mb-5">Start Bootstrap can help you build better websites using the Bootstrap
-                                                framework! Just download a theme and start customizing, no strings
-                                                attached!</p>
+                <p class = "text-white-75 mb-5">Welcome to TaskSphere: Your personal productivity hub. Discover seamless task management designed for your success. Organize, collaborate, and conquer tasks effortlessly—all within your control, all in one place.</p>
                 <a class = "btn btn-primary btn-xl" href = "#more">Find Out More</a>
             </div>
         </div>
@@ -124,7 +122,8 @@
         <p class = "text-muted mb-4">Take the first step into our platform by clicking below. You'll be unlocking a
                                      world of organized task management at
                                      your fingertips.</p>
-        <a class = "btn btn-light btn-xl" href = "{{ path("app_login") }}">Log in</a>
+        <a class = "btn btn-light btn-xl m-5" href = "{{ path("app_register") }}">Sign up</a>
+        <a class = "btn btn-primary btn-xl m-5" href = "{{ path("app_login") }}">Log in</a>
     </div>
 </section>
 

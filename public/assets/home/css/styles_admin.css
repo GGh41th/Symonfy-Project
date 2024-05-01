@@ -129,6 +129,8 @@ body {
     margin-left: 60px;
     padding: 20px;
     width: calc(100% - 60px);
+    height: 100vh;
+    overflow: auto;
 }
 
 #loading {
