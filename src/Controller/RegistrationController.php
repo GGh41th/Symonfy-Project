@@ -27,6 +27,9 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home_screen');
+        }
         $user = new User();
         $user->setRole("user");
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -40,14 +43,14 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            $image=$form->get('profileImage')->getData();
-            if($image){
-                try{
-                    $filename=$this->uploader->upload($image);
+            $image = $form->get('profileImage')->getData();
+            if ($image) {
+                try {
+                    $filename = $this->uploader->upload($image);
                     $user->setProfileImage($filename);
-                }catch (\RuntimeException $e){
-                    return $this->render('registration/register.html.twig',[
-                        'errors'=>$e->getMessage()
+                } catch (\RuntimeException $e) {
+                    return $this->render('registration/register.html.twig', [
+                        'errors' => $e->getMessage()
                     ]);
                 }
             }
@@ -57,7 +60,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('gtari20ghaith33@gmail.com', 'ERRET Task Manager'))
+                    ->from(new Address('tasksphere@hotmail.com', 'ERRET Task Manager'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')

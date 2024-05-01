@@ -1,9 +1,4 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}Profile
-{% endblock %}
-
-{% block stylesheets %}
 	<style>
 		.feedback-container {
 
@@ -26,9 +21,13 @@
 			border-radius: 10px;
 			border: none;
 			margin-bottom: 10px;
-
+			transition:0.25s;
+		}
+		.butt:hover {
+			background-color: darkgreen;
 		}
 		.textarea {
+			padding: 15px;
 			width: 95%;
 			height: 150px;
 			border-radius: 10px;
@@ -41,14 +40,12 @@
 		}
 		a{
 			align-self: flex-start; 
-			color: black;
+			color: grey;
 		}
 	</style>
-{% endblock %}
 
-{% block body %}
 	<div class="d-flex flex-column m-5 p-5  justify-content-center align-items-center">
-		<div class="feedback-container m-2 p-2">
+		<div class="feedback-container m-2 p-2 text-black">
 
 			<h3>Feedback :
 			</h3>
@@ -65,5 +62,3 @@
 		</div>
 	</div>
 
-
-{% endblock %}

@@ -1,0 +1,169 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #303030;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+.navigation-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(120deg, rgba(0, 0, 0), rgba(0, 0, 30));
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    font-size: 20px;
+    width: 60px;
+    transition: 0.5s;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.navigation-panel:hover {
+    width: 150px;
+}
+
+.navigation-panel .nav-item {
+    height: 65px;
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    margin: 0 10px;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    transition: 0.5s;
+    z-index: 1;
+}
+
+.navigation-panel .nav-item p {
+    position: absolute;
+    transform: translate(20px, 8px);
+    user-select: none;
+    transition: 0.5s;
+    opacity: 0;
+    text-wrap: nowrap;
+    font-size: 15px;
+}
+
+.navigation-panel .nav-item ion-icon {
+    transition: 0.5s;
+}
+
+.navigation-panel .nav-item.profile img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    transition: 0.5s;
+    user-select: none;
+}
+
+.navigation-panel .nav-item.profile {
+    height: 120px;
+    border-bottom: 2px solid #303030;
+    padding: 0 0 20px;
+    box-sizing: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    background: linear-gradient(-30deg, rgba(0, 0, 0, 0.4), rgba(0, 100, 0, 0.4))
+}
+
+.navigation-panel:hover .nav-item.profile img {
+    width: 70px;
+    height: 70px;
+}
+
+
+.navigation-panel:hover .nav-item p {
+    transition-delay: 0.2s;
+    transform: translate(40px, 8px);
+    opacity: 1;
+}
+
+.navigation-panel .nav-item.profile p {
+    text-align: center;
+    transform: none;
+    width: 100%;
+    transform: translateY(40px);
+    font-size: 0em;
+    text-wrap: wrap;
+}
+
+.navigation-panel:hover .nav-item.profile p {
+    font-size: 0.7em;
+    transform: translateY(50px);
+}
+
+.navigation-panel .nav-item:hover:not(.active):not(.logout):not(:nth-child(1)) {
+    background-color: rgba(0, 128, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.nav-item:hover:not(.active).logout {
+    background-color: rgba(128, 0, 0, 0.4);
+}
+
+.indicator {
+    position: absolute;
+    height: 65px;
+    background-color: green;
+    width: 100%;
+    transition: 0.5s ease-in-out;
+}
+
+.nav-item.logout {
+    position: absolute;
+    bottom: 0;
+}
+
+.content {
+    margin-left: 60px;
+    padding: 20px;
+    width: calc(100% - 60px);
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    cursor: wait;
+    transition: .3s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#loading.shown {
+    opacity: 1;
+    visibility: visible;
+}
+
+#loading-spinner {
+    animation: load 1s infinite steps(12);
+    width: 250px;
+    height: 250px;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+@keyframes load {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

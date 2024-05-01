@@ -20,6 +20,6 @@ services:
       - '../src/Kernel.php'
   App\Service\UploaderService:
     arguments:
-      $targetDirectory: '%kernel.project_dir%/assets/profile_images'
+      $targetDirectory: '%kernel.project_dir%/public/assets/profile_images'
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
