@@ -1,5 +1,182 @@
-<div>
-<h1> Please edit me, this page is a place holder! </h1>
-<h1> I am located at: <b> templates/user/tasks.html.twig </b> </h1>
-<h1> My controller is located at: <b> src/Controller/UserController.php </b> </h1>
-</div>
+<style>
+ 	.container {
+ 		margin-left: 70px;
+ 		overflow-y: auto;
+ 		height: 100vh;
+ 		padding-bottom: 100px;
+ 		width: 100%;
+         flex: 1;
+ 	}
+ 	.search-div {
+ 		display: flex;
+ 		justify-content: space-between;
+ 		align-items: center;
+ 		margin: 20px 0;
+ 		width: 80%;
+ 		gap: 20px;
+ 	}
+ 	.search-button {
+ 		background-color: #009900;
+ 		color: #fff;
+ 		padding: 10px 20px;
+ 		border: none;
+ 		border-radius: 5px;
+ 		flex-shrink: 0;
+ 	}
+ 	.search-input {
+ 		flex: 1;
+ 		padding: 10px;
+ 		border: 1px solid #ccc;
+ 		border-radius: 5px;
+ 		width: 45%;
+ 	}
+ 	.task-add-div {
+ 		margin-top: 50px;
+ 		display: flex;
+ 		flex-direction: column;
+ 		gap: 20px
+ 	}
+ 	.two-inputs {
+ 		display: flex;
+ 		width: 80%;
+ 		justify-content: space-between;
+ 	}
+ 	textarea {
+ 		border: 1px solid #ccc;
+ 		border-radius: 5px;
+ 		padding: 8px 12px;
+ 		font-size: 16px;
+ 		font-family: Arial, sans-serif;
+ 		background-color: #f9f9f9;
+ 		color: #333;
+ 		resize: none;
+ 		width: 80%;
+ 	}
+ 	.task-input {
+ 		padding: 8px 12px;
+ 		font-size: 16px;
+ 		border: 1px solid #ccc;
+ 		border-radius: 5px;
+ 		width: 50%;
+ 	}
+ 	.task-input-date {
+ 		padding: 8px 12px;
+ 		font-size: 16px;
+ 		border: 1px solid #ccc;
+ 		border-radius: 5px;
+ 		width: 25%;
+ 	}
+ 	.add-task-button {
+ 		background-color: #009900;
+ 		color: #fff;
+ 		padding: 10px 20px;
+ 		border: none;
+ 		border-radius: 5px;
+ 		width: 80%;
+ 	}
+ 	.tasks-container {
+ 		display: flex;
+ 		flex-direction: column;
+ 		gap: 20px;
+ 		width: 80%;
+ 	}
+ 	.task {
+ 		margin-top: 50px;
+ 		display: flex;
+ 		flex-direction: column;
+ 		gap: 5px;
+ 		padding: 20px;
+ 		border: 1px solid #ccc;
+ 		border-radius: 5px;
+ 		background-color: #444444;
+ 	}
+ 	.task-title {
+ 		font-size: 24px;
+ 		color: white;
+ 	}
+ 	.task-description {
+ 		font-size: 18px;
+ 		color: grey;
+ 	}
+ 	.task-date {
+ 		font-size: 18px;
+ 		color: grey;
+ 	}
+ 	.success {
+ 		color: green;
+ 		background-color: lightgreen;
+ 		padding: 5px;
+ 		border-radius: 5px;
+ 	}
+ 	.overdue {
+ 		color: red;
+ 		background-color: lightcoral;
+ 		padding: 5px;
+ 		border-radius: 5px;
+ 	}
+ </style>
+
+ <div class='container'>
+ 	<div class="search-div">
+ 		<input class="search-input" type="text" placeholder="Search ...">
+ 		<div>
+
+ 			<button class="search-button ">sort alphabetically
+ 			</button>
+ 			<button class="search-button ">
+ 				sort by date</button>
+ 		</div>
+ 	</div>
+
+ 	<div class="task-add-div">
+ 		<h2>Add Task</h2>
+ 		<div class="two-inputs">
+ 			<input class="task-input" type="text" placeholder="enter a task title">
+ 			<input class="task-input-date" type="date">
+ 		</div>
+ 		<textarea placeholder="enter task description .."></textarea>
+ 		<button class="add-task-button">add task</button>
+ 	</div>
+ 	<div class="tasks-container">
+ 		<div class="task">
+ 			<h3 class="task-title">Attend tech conference</h3>
+ 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
+ 			<h4 class="task-date">2024-03-20</h4>
+ 			<div class="d-flex flex-row justify-content-around">
+ 				<div clas="d-flex flex-row ">
+ 					<button class="search-button">delete</button>
+ 					<button class="search-button">update</button>
+ 				</div>
+ 				<h3 class="overdue">overdue</h3>
+ 			</div>
+ 		</div>
+
+ 		<div class="task">
+ 			<h3 class="task-title">Attend tech conference</h3>
+ 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
+ 			<h4 class="task-date">2024-03-20</h4>
+ 			<div class="d-flex flex-row justify-content-around">
+ 				<div clas="d-flex flex-row ">
+ 					<button class="search-button">delete</button>
+ 					<button class="search-button">update</button>
+ 				</div>
+ 				<h3 class="overdue">overdue</h3>
+ 			</div>
+ 		</div>
+
+ 		<div class="task">
+ 			<h3 class="task-title">Attend tech conference</h3>
+ 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
+ 			<h4 class="task-date">2024-03-20</h4>
+ 			<div class="d-flex flex-row justify-content-around">
+ 				<div clas="d-flex flex-row ">
+ 					<button class="search-button">delete</button>
+ 					<button class="search-button">update</button>
+ 				</div>
+ 				<h3 class="overdue">overdue</h3>
+ 			</div>
+ 		</div>
+ 	</div>
+
+
+ </div>

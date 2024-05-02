@@ -1,5 +1,77 @@
-<div>
-<h1> Please edit me, this page is a place holder! </h1>
-<h1> I am located at: <b> templates/user/stats.html.twig </b> </h1>
-<h1> My controller is located at: <b> src/Controller/UserController.php </b> </h1>
-</div>
+<style>
+ 	.container {
+ 		margin-left: 70px;
+ 		margin-top: 70px;
+ 	}
+ 	table {
+ 		width: 100%;
+ 		border-collapse: collapse;
+ 		background-color: #333;
+ 		color: #fff;
+ 	}
+ 	th {
+ 		background-color: #444;
+ 		color: #fff;
+ 		border: 1px solid #555;
+ 		padding: 8px;
+ 	}
+ 	td {
+ 		border: 1px solid #555;
+ 		padding: 8px;
+ 	}
+ 	tr:nth-child(even) {
+ 		background-color: #555;
+ 	}
+ 	td:nth-child(1) {
+ 		text-align: left;
+ 		font-weight: 600;
+ 	}
+ 	tr:hover {
+ 		opacity: 0.7;
+ 	}
+ 	th,
+ 	td {
+ 		text-align: center;
+         padding: 20px 10px 20px 10px;
+ 	}
+ </style>
+
+ <div class='container'>
+ 	<div>
+ 		<table>
+
+ 			<tr>
+ 				<th></th>
+ 				<th>Tasks Done</th>
+ 				<th>Tasks Failed</th>
+ 				<th>Total</th>
+ 			</tr>
+ 			<tr>
+ 				<td>Today</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 			</tr>
+ 			<tr>
+ 				<td>Last week</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 			</tr>
+ 			<tr>
+ 				<td>Last month</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 				<td>0(0%)</td>
+ 			</tr>
+ 			<tr>
+ 				<td>Pending tasks</td>
+ 				<td></td>
+ 				<td></td>
+ 				<td></td>
+ 			</tr>
+ 		</table>
+ 	</div>
+
+
+ </div>

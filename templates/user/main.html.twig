@@ -1,6 +1,90 @@
-<div>
+<style>
+ 	.container {
+ 		margin-left: 70px;
+ 	}
+ 	table {
+ 		width: 90%;
+ 		border-collapse: collapse;
+ 	}
+ 	th {
+ 		background-color: #aaaaaa;
+ 		color: #333;
+ 		border: 1px solid #ddd;
+ 		padding: 8px;
+ 		text-align: left;
+ 	}
+ 	td {
+ 		border: 1px solid #aaaaaa;
+ 		padding: 20px 10px;
+ 		font-weight: 500;
+ 	}
+ 	.main-title {
+ 		color: white;
+ 		font-size: 50px;
+ 		margin-bottom: 10px;
+ 	}
+ 	.secondary-title {
+ 		color: white;
+ 		font-size: 30px;
+ 		margin-bottom: 60px;
+ 	}
+ 	.success {
+ 		color: green;
+ 	}
+ 	.overdue {
+ 		color: red;
+ 	}
+ </style>
 
-    <h1>Please edit me, this page is a place holder!</h1>
-    <h1>I am located at:  <b>templates/user/main.html.twig</b></h1>
-    <h1>My controller is located at: <b>src/Controller/UserController.php</b></h1>
-</div>
+ <div class='container'>
+ 	<div>
+ 		<h1 class="main-title">welcome back {user}</h1>
+ 		<h2 class="secondary-title">you have 1 out of 3 tasks completed</h2>
+ 		<div>
+
+ 			<table>
+ 				<tr>
+ 					<th>task Title</th>
+ 					<th>Task description
+ 					</th>
+ 					<th>end date</th>
+ 					<th>status</th>
+
+ 				</tr>
+ 				<tr>
+ 					<td>Attend tech conference</td>
+ 					<td>participate in stuff</td>
+ 					<td>2020-12-12</td>
+ 					<td class='success'>completed</td>
+ 				</tr>
+ 				<tr>
+ 					<td>optimize the database tables</td>
+ 					<td>improve performance by optilizing sql queries</td>
+ 					<td>2020-1-37</td>
+ 					<td class='overdue'>overdue</td>
+ 				</tr>
+ 				<tr>
+ 					<td>optimize the database tables</td>
+ 					<td>improve performance by optilizing sql queries</td>
+ 					<td>2020-1-37</td>
+ 					<td class='overdue'>overdue</td>
+ 				</tr>
+ 				<tr>
+ 					<td>optimize the database tables</td>
+ 					<td>improve performance by optilizing sql queries</td>
+ 					<td>2020-1-37</td>
+ 					<td class='overdue'>overdue</td>
+ 				</tr>
+ 				<tr>
+ 					<td>Attend tech conference</td>
+ 					<td>participate in stuff</td>
+ 					<td>2020-12-12</td>
+ 					<td class='success'>completed</td>
+ 				</tr>
+
+ 			</table>
+ 		</div>
+ 	</div>
+
+
+ </div>
