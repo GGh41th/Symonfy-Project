@@ -131,6 +131,14 @@ body {
     width: calc(100% - 60px);
     height: 100vh;
     overflow: auto;
+    transition: 0.5s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.content.shown {
+    opacity: 1;
+    visibility: visible;
 }
 
 #loading {
@@ -151,6 +159,7 @@ body {
     opacity: 1;
     visibility: visible;
 }
+
 
 #loading-spinner {
     animation: load 1s infinite steps(12);

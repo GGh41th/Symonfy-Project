@@ -27,13 +27,15 @@ for (let i = 0; i < nav.length; i++) {
 function setActive(item) {
     const container = document.querySelector('.content');
     const loadingDiv = document.querySelector('#loading');
-    $(".content").html("");
+    container.classList.remove("shown");
     loadingDiv.classList.add("shown");
+    $(".content").html("");
     $.ajax({
         type: "POST",
         url: "/" + item.getAttribute("data-url"),
         success: function (response) {
             $(".content").html(response);
+            container.classList.add("shown");
             loadingDiv.classList.remove("shown");
         },
         error: function (xhr, status, error) {

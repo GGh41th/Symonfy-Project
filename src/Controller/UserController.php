@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\FeedBack;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -167,6 +168,25 @@ class UserController extends AbstractController
         /* Change whatever you want here  */
 
         return $this->render('user/logout_page.html.twig');
+    }
+
+    #[Route("/support/sendfeedback", name: 'app_user_support_send')]
+    public function sendFeedback(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $feedbackMessage = $request->request->get('feedback');
+        $feedback = new FeedBack();
+        $feedback->setUserId($this->getUser());
+        $feedback->setSubmissionText($feedbackMessage);
+        $feedback->setDate(new \DateTime());
+        $this->entityManager->persist($feedback);
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Feedback sent successfully'
+        ]);
     }
 
     #[Route('/{value}')]
