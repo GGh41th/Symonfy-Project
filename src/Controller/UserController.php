@@ -25,7 +25,18 @@ class UserController extends AbstractController
     private function getTasks(): array
     {
         $userId = $this->getUser();
-        return $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $userId]);
+        $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $userId]);
+        foreach ($tasks as $task) {
+            $currentDate = new \DateTime();
+            $endDate = $task->getEndDate();
+            $difference = $currentDate->diff($endDate);
+            if ($difference->days > 0 && $task->getStatus() == "Pending") {
+                $task->setStatus("Overdue");
+                $this->entityManager->persist($task);
+                $this->entityManager->flush();
+            }
+        }
+        return $tasks;
     }
 
     #[Route('/')]
@@ -187,11 +198,53 @@ class UserController extends AbstractController
         if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
+        $tasks = $this->getTasks();
+        $todayTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastWeekTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastMonthTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $pendingTasks = 0;
+        foreach ($tasks as $task) {
+            $completionDate = $task->getCompletionDate();
+            $endDate = $task->getEndDate();
+            if ($completionDate) {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($completionDate);
+                if ($interval->days < 1) {
+                    $todayTasks["finished"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["finished"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["finished"]++;
+                }
+            } else {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($endDate);
+                if ($task->getStatus() == "Pending") {
+                    $pendingTasks++;
+                } else if ($interval->days < 1) {
+                    $todayTasks["failed"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["failed"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["failed"]++;
+                }
+            }
 
-        /* Change whatever you want here  */
-
-
-        return $this->render('user/stats.html.twig');
+        }
+        $todayTasks["total"] = $todayTasks["finished"] + $todayTasks["failed"];
+        $lastWeekTasks["total"] = $lastWeekTasks["finished"] + $lastWeekTasks["failed"];
+        $lastMonthTasks["total"] = $lastMonthTasks["finished"] + $lastMonthTasks["failed"];
+        $testDate = new \DateTime();
+        $testDate->modify('-1 week');
+        $testDate2 = new \DateTime();
+        $testDate2->modify('-1 month');
+        $diff = $testDate->diff($testDate2);
+        return $this->render('user/stats.html.twig', [
+            'today' => $todayTasks,
+            'lastWeek' => $lastWeekTasks,
+            'lastMonth' => $lastMonthTasks,
+            'pending' => $pendingTasks,
+        ]);
     }
 
     #[Route('/support', name: 'app_user_support')]
