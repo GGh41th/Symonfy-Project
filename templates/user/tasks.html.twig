@@ -1,182 +1,379 @@
 <style>
- 	.container {
- 		margin-left: 70px;
- 		overflow-y: auto;
- 		height: 100vh;
- 		padding-bottom: 100px;
- 		width: 100%;
-         flex: 1;
- 	}
- 	.search-div {
- 		display: flex;
- 		justify-content: space-between;
- 		align-items: center;
- 		margin: 20px 0;
- 		width: 80%;
- 		gap: 20px;
- 	}
- 	.search-button {
- 		background-color: #009900;
- 		color: #fff;
- 		padding: 10px 20px;
- 		border: none;
- 		border-radius: 5px;
- 		flex-shrink: 0;
- 	}
- 	.search-input {
- 		flex: 1;
- 		padding: 10px;
- 		border: 1px solid #ccc;
- 		border-radius: 5px;
- 		width: 45%;
- 	}
- 	.task-add-div {
- 		margin-top: 50px;
- 		display: flex;
- 		flex-direction: column;
- 		gap: 20px
- 	}
- 	.two-inputs {
- 		display: flex;
- 		width: 80%;
- 		justify-content: space-between;
- 	}
- 	textarea {
- 		border: 1px solid #ccc;
- 		border-radius: 5px;
- 		padding: 8px 12px;
- 		font-size: 16px;
- 		font-family: Arial, sans-serif;
- 		background-color: #f9f9f9;
- 		color: #333;
- 		resize: none;
- 		width: 80%;
- 	}
- 	.task-input {
- 		padding: 8px 12px;
- 		font-size: 16px;
- 		border: 1px solid #ccc;
- 		border-radius: 5px;
- 		width: 50%;
- 	}
- 	.task-input-date {
- 		padding: 8px 12px;
- 		font-size: 16px;
- 		border: 1px solid #ccc;
- 		border-radius: 5px;
- 		width: 25%;
- 	}
- 	.add-task-button {
- 		background-color: #009900;
- 		color: #fff;
- 		padding: 10px 20px;
- 		border: none;
- 		border-radius: 5px;
- 		width: 80%;
- 	}
- 	.tasks-container {
- 		display: flex;
- 		flex-direction: column;
- 		gap: 20px;
- 		width: 80%;
- 	}
- 	.task {
- 		margin-top: 50px;
- 		display: flex;
- 		flex-direction: column;
- 		gap: 5px;
- 		padding: 20px;
- 		border: 1px solid #ccc;
- 		border-radius: 5px;
- 		background-color: #444444;
- 	}
- 	.task-title {
- 		font-size: 24px;
- 		color: white;
- 	}
- 	.task-description {
- 		font-size: 18px;
- 		color: grey;
- 	}
- 	.task-date {
- 		font-size: 18px;
- 		color: grey;
- 	}
- 	.success {
- 		color: green;
- 		background-color: lightgreen;
- 		padding: 5px;
- 		border-radius: 5px;
- 	}
- 	.overdue {
- 		color: red;
- 		background-color: lightcoral;
- 		padding: 5px;
- 		border-radius: 5px;
- 	}
- </style>
+    .container {
+        margin-left: 70px;
+        overflow-y: auto;
+        height: 100vh;
+        padding-bottom: 100px;
+        width: 100%;
+        flex: 1;
+    }
 
- <div class='container'>
- 	<div class="search-div">
- 		<input class="search-input" type="text" placeholder="Search ...">
- 		<div>
+    input {
+        outline: none;
+    }
 
- 			<button class="search-button ">sort alphabetically
- 			</button>
- 			<button class="search-button ">
- 				sort by date</button>
- 		</div>
- 	</div>
+    textarea {
+        outline: none;
+    }
 
- 	<div class="task-add-div">
- 		<h2>Add Task</h2>
- 		<div class="two-inputs">
- 			<input class="task-input" type="text" placeholder="enter a task title">
- 			<input class="task-input-date" type="date">
- 		</div>
- 		<textarea placeholder="enter task description .."></textarea>
- 		<button class="add-task-button">add task</button>
- 	</div>
- 	<div class="tasks-container">
- 		<div class="task">
- 			<h3 class="task-title">Attend tech conference</h3>
- 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
- 			<h4 class="task-date">2024-03-20</h4>
- 			<div class="d-flex flex-row justify-content-around">
- 				<div clas="d-flex flex-row ">
- 					<button class="search-button">delete</button>
- 					<button class="search-button">update</button>
- 				</div>
- 				<h3 class="overdue">overdue</h3>
- 			</div>
- 		</div>
+    .search-div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        width: 80%;
+        gap: 20px;
+    }
 
- 		<div class="task">
- 			<h3 class="task-title">Attend tech conference</h3>
- 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
- 			<h4 class="task-date">2024-03-20</h4>
- 			<div class="d-flex flex-row justify-content-around">
- 				<div clas="d-flex flex-row ">
- 					<button class="search-button">delete</button>
- 					<button class="search-button">update</button>
- 				</div>
- 				<h3 class="overdue">overdue</h3>
- 			</div>
- 		</div>
+    .search-button {
+        background-color: #009900;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        flex-shrink: 0;
+    }
 
- 		<div class="task">
- 			<h3 class="task-title">Attend tech conference</h3>
- 			<h4 class="task-description">Participate in a tech conference to learn about industry best practices.</h4>
- 			<h4 class="task-date">2024-03-20</h4>
- 			<div class="d-flex flex-row justify-content-around">
- 				<div clas="d-flex flex-row ">
- 					<button class="search-button">delete</button>
- 					<button class="search-button">update</button>
- 				</div>
- 				<h3 class="overdue">overdue</h3>
- 			</div>
- 		</div>
- 	</div>
+    .search-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 45%;
+    }
+
+    .task-add-div {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px
+    }
+
+    .two-inputs {
+        display: flex;
+        width: 80%;
+        justify-content: space-between;
+    }
+
+    textarea {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px 12px;
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        resize: none;
+        width: 80%;
+    }
+
+    .task-input {
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 50%;
+    }
+
+    .task-input-date {
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 25%;
+    }
+
+    .add-task-button {
+        background-color: #009900;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        width: 80%;
+    }
+
+    .tasks-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 80%;
+    }
+
+    .task {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #444444;
+    }
+
+    .task-title {
+        font-size: 24px;
+        color: white;
+    }
+
+    .task-description {
+        font-size: 18px;
+        color: grey;
+    }
+
+    .task-date {
+        font-size: 18px;
+        color: grey;
+    }
+
+    .finished {
+        color: green;
+        background-color: lightgreen;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .overdue {
+        color: red;
+        background-color: lightcoral;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .pending {
+        color: yellow;
+        background-color: rgba(255, 255, 0, 0.27);
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .task-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .finish-button {
+        background-color: #009900;
+    }
+
+    .delete-button {
+        background-color: #b91212;
+    }
+
+    .update-button {
+        background-color: #2061ee;
+    }
 
 
- </div>
+</style>
+
+<div class = 'container'>
+    <div class = "search-div">
+        <input class = "search-input" type = "text" placeholder = "Search ..." onkeyup = "filterTasks()">
+        <div>
+
+            <button class = "search-button" onclick = "sortAlpha()">sort alphabetically
+            </button>
+            <button class = "search-button " onclick = "sortDate()">
+                sort by date
+            </button>
+        </div>
+    </div>
+
+    <div class = "task-add-div">
+        <h2>Add Task</h2>
+        <div class = "two-inputs">
+            <input class = "task-input" type = "text" placeholder = "enter a task title">
+            <input class = "task-input-date" type = "date" id = "date-input">
+        </div>
+        <textarea placeholder = "enter task description .."></textarea>
+        <button class = "add-task-button" onclick = "addTask()">Add Task</button>
+    </div>
+    <div class = "tasks-container">
+        {% for task in tasks %}
+            <div class = "task">
+                <h3 class = "task-title">{{ task.title }} </h3>
+                <h4 class = "task-description">{{ task.description }}</h4>
+                <h4 class = "task-date">{{ task.endDate|date("d-m-Y") }}</h4>
+                <div class = "d-flex flex-row justify-content-between">
+                    <div class = "task-buttons">
+                        <button class = "search-button delete-button" onclick = "deleteTask('{{ task.id }}')">Delete
+                        </button>
+                        {% if task.status =="Pending" %}
+                            <button class = "search-button update-button" onclick = "updateTask('{{ task.id }}')">
+                                Update
+                            </button>
+                            <button class = "search-button finish-button" onclick = "finishTask('{{ task.id }}')">
+                                Finish
+                            </button>
+                        {% endif %}
+                    </div>
+                    <h3 class = "{{ task.status }}">{{ task.status }}</h3>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+    if (typeof alphaSorting === "undefined") {
+
+        function filterTasks() {
+            const searchInput = document.querySelector(".search-input");
+            const searchValue = searchInput.value.toLowerCase();
+            const tasks = document.querySelectorAll(".task");
+            tasks.forEach(task => {
+                const title = task.querySelector(".task-title").textContent.toLowerCase();
+                const description = task.querySelector(".task-description").textContent.toLowerCase();
+                if (title.includes(searchValue) || description.includes(searchValue)) {
+                    task.style.display = "block";
+                } else {
+                    task.style.display = "none";
+                }
+            });
+        }
+
+        function sortAlpha() {
+            const tasksToSort = document.querySelectorAll(".task");
+            const tasksArray = Array.from(tasksToSort);
+            tasksArray.sort((a, b) => {
+                const titleA = a.querySelector(".task-title").textContent;
+                const titleB = b.querySelector(".task-title").textContent;
+                if (alphaSorting === "asc") {
+                    return titleA.localeCompare(titleB);
+                } else {
+                    return titleB.localeCompare(titleA);
+                }
+            });
+            const tasksContainer = document.querySelector(".tasks-container");
+            tasksContainer.innerHTML = "";
+            tasksArray.forEach(task => {
+                tasksContainer.appendChild(task);
+            });
+            alphaSorting = alphaSorting === "asc" ? "desc" : "asc";
+        }
+
+        function parseDate(dateString) {
+            const [day, month, year] = dateString.split("-");
+            return new Date(year, month - 1, day);
+        }
+
+        function addTask() {
+            const titleInput = document.querySelector(".task-input");
+            const dateInput = document.querySelector(".task-input-date");
+            const descriptionInput = document.querySelector("textarea");
+            const title = titleInput.value;
+            const date = dateInput.value;
+            const description = descriptionInput.value;
+
+            if (title.trim() === "") {
+                alert("Please enter a title");
+                return;
+            }
+            if (description.trim() === "") {
+                alert("Please enter a description");
+                return;
+            }
+            $.ajax({
+                url: "user/task/add",
+                type: "POST",
+                data: {
+                    title,
+                    date,
+                    description
+                },
+                success: function (response) {
+                    if (response.status === "success")
+                        navigateTo("tasks");
+                }
+            });
+        }
+
+        function deleteTask(id) {
+            $.ajax({
+                url: "user/task/delete",
+                type: "POST",
+                data: {
+                    id
+                },
+                success: function (response) {
+                    if (response.status === "success")
+                        navigateTo("tasks");
+                }
+            });
+        }
+
+        function updateTask(id) {
+            let newTitle = prompt("Enter new title");
+            let newDescription = prompt("Enter new description");
+            if (newTitle.trim() === "") {
+                alert("Please enter a title");
+                return;
+            }
+            if (newDescription.trim() === "") {
+                alert("Please enter a description");
+                return;
+            }
+            $.ajax({
+                url: "user/task/update",
+                type: "POST",
+                data: {
+                    id: id,
+                    title: newTitle,
+                    description: newDescription
+                },
+                success: function (response) {
+                    if (response.status === "success")
+                        navigateTo("tasks");
+                }
+            });
+        }
+
+        function finishTask(id) {
+            $.ajax({
+                url: "user/task/finish",
+                type: "POST",
+                data: {
+                    id
+                },
+                success: function (response) {
+                    if (response.status === "success")
+                        navigateTo("tasks");
+                }
+            });
+        }
+
+        function sortDate() {
+            const tasksToSort = document.querySelectorAll(".task");
+            const tasksArray = Array.from(tasksToSort);
+            tasksArray.sort((a, b) => {
+                const dateA = parseDate(a.querySelector(".task-date").textContent);
+                const dateB = parseDate(b.querySelector(".task-date").textContent);
+                if (dateSorting === "asc") {
+                    return dateA - dateB;
+                } else {
+                    return dateB - dateA;
+                }
+            });
+            const tasksContainer = document.querySelector(".tasks-container");
+            tasksContainer.innerHTML = "";
+            tasksArray.forEach(task => {
+                tasksContainer.appendChild(task);
+            });
+            dateSorting = dateSorting === "asc" ? "desc" : "asc";
+        }
+
+        let alphaSorting = "asc";
+        let dateSorting = "asc";
+        const dateInput = document.querySelector("#date-input");
+        dateInput.value = new Date().toISOString().split("T")[0];
+        dateInput.min = new Date().toISOString().split("T")[0];
+        dateInput.addEventListener("change", () => {
+            const date = new Date(dateInput.value);
+            const now = new Date();
+            if (date == 'Invalid Date' || date < now) {
+                dateInput.value = new Date().toISOString().split("T")[0];
+            }
+        });
+    }
+</script>

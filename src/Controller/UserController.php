@@ -30,7 +30,7 @@ class UserController extends AbstractController
             $currentDate = new \DateTime();
             $endDate = $task->getEndDate();
             $difference = $currentDate->diff($endDate);
-            if ($difference->days > 0 && $task->getStatus() == "Pending") {
+            if ($difference->days > 0 && $task->getStatus() == "Pending" && $endDate < $currentDate) {
                 $task->setStatus("Overdue");
                 $this->entityManager->persist($task);
                 $this->entityManager->flush();
@@ -79,7 +79,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/task/generaterandom', name: 'app_user_task_add')]
-    public function addTask(): Response
+    public function generateRandom(): Response
     {
 
         $faker = Factory::create();
@@ -187,9 +187,22 @@ class UserController extends AbstractController
         if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Change whatever you want here  */
+        $tasks = $this->getTasks();
+        $tasksToSend = [];
+        foreach ($tasks as $task) {
+            $taskData = [
+                'id' => $task->getId(),
+                'title' => $task->getTitle(),
+                'description' => $task->getDescription(),
+                'status' => $task->getStatus(),
+                'endDate' => $task->getEndDate(),
+            ];
+            array_push($tasksToSend, $taskData);
+        }
 
-        return $this->render('user/tasks.html.twig');
+        return $this->render('user/tasks.html.twig', [
+            'tasks' => $tasksToSend,
+        ]);
     }
 
     #[Route('/stats', name: 'app_user_stats')]
@@ -286,6 +299,97 @@ class UserController extends AbstractController
         return $this->json([
             'status' => 'success',
             'message' => 'Feedback sent successfully'
+        ]);
+    }
+
+    #[Route('/user/task/add')]
+    public function addTask(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $title = $request->request->get('title');
+        $description = $request->request->get('description');
+        $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $request->request->get('date'));
+        $task = new Task();
+        $task->setTitle($title);
+        $task->setDescription($description);
+        $task->setStatus("Pending");
+        $task->setCreationDate(new \DateTime());
+        $task->setEndDate($endDate);
+        $task->setUserId($this->getUser());
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Task added successfully'
+        ]);
+    }
+
+    #[Route('/user/task/update', name: 'app_user_task_update')]
+    public function updateTask(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $taskId = $request->request->get('id');
+        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
+        if (!$task)
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ]);
+        $title = $request->request->get('title');
+        $description = $request->request->get('description');
+        $task->setTitle($title);
+        $task->setDescription($description);
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Task updated successfully'
+        ]);
+    }
+
+    #[Route('/user/task/delete', name: 'app_user_task_delete')]
+    public function deleteTask(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $taskId = $request->request->get('id');
+        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
+        if (!$task)
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ]);
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Task deleted successfully'
+        ]);
+    }
+
+    #[Route('/user/task/finish', name: 'app_user_task_finish')]
+    public function finishTask(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $taskId = $request->request->get('id');
+        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
+        if (!$task)
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ]);
+        $task->setStatus("Finished");
+        $task->setCompletionDate(new \DateTime());
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Task finished successfully'
         ]);
     }
 
