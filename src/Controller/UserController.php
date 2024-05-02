@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\FeedBack;
+use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,12 @@ class UserController extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    private function getTasks(): array
+    {
+        $userId = $this->getUser();
+        return $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $userId]);
     }
 
     #[Route('/')]
@@ -35,10 +42,50 @@ class UserController extends AbstractController
         if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Change whatever you want here  */
+        $tasks = $this->getTasks();
+        $tasksData = [];
+        $completedTasks = 0;
+        $totalTasks = count($tasks);
+        foreach ($tasks as $task) {
+            $taskData = [
+                'id' => $task->getId(),
+                'title' => $task->getTitle(),
+                'description' => $task->getDescription(),
+                'status' => $task->getStatus(),
+                'endDate' => $task->getEndDate(),
+            ];
+            if ($task->getStatus() == "Finished") {
+                $completedTasks++;
+            }
+            array_push($tasksData, $taskData);
+        }
+        return $this->render('user/main.html.twig', [
+            'tasks' => $tasks,
+            'user' => $this->getUser(),
+            'total' => $totalTasks,
+            'finished' => $completedTasks,
+        ]);
+    }
 
+    #[Route('/task/generaterandom', name: 'app_user_task_add')]
+    public function addTask(): Response
+    {
 
-        return $this->render('user/main.html.twig');
+        $faker = Factory::create();
+
+        for ($i = 0; $i < 10; $i++) {
+            $task = new Task();
+            $task->setTitle($faker->sentence());
+            $task->setDescription($faker->paragraph());
+            $task->setStatus($faker->randomElement(['Overdue', 'Pending', 'Finished']));
+            $task->setCreationDate(new \DateTime());
+            $task->setEndDate(new \DateTime());
+            $task->setUserId($this->getUser());
+            $this->entityManager->persist($task);
+        }
+
+        $this->entityManager->flush();
+        return $this->redirectToRoute('home_screen');
     }
 
     #[Route('/profile', name: 'app_user_profile')]
@@ -56,18 +103,18 @@ class UserController extends AbstractController
         ];
 
         return $this->render('user/profile.html.twig', [
-            'user' => $userData
+            'user' => $userData,
         ]);
     }
 
     #[Route('/profile/update/{attribute}', name: 'user_update')]
-    public function updateUsername(Request $request, ManagerRegistry $managerRegistry, string $attribute): Response
+    public function updateUsername(Request $request, string $attribute): Response
     {
         if (!($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
 
-        $users = $managerRegistry->getRepository(User::class);
+        $users = $this->entityManager->getRepository(User::class);
         if ($attribute == 'username') {
             $newUsername = $request->request->get('username');
             $existingUser = $users->findOneBy(['username' => $newUsername]);

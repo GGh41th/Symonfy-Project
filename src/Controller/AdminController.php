@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -103,13 +102,13 @@ class AdminController extends AbstractController
     }
 
     #[Route('/profile/update/{attribute}', name: 'user_update')]
-    public function updateUsername(Request $request, ManagerRegistry $managerRegistry, string $attribute): Response
+    public function updateUsername(Request $request, string $attribute): Response
     {
         if (!($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
 
-        $users = $managerRegistry->getRepository(User::class);
+        $users = $this->entityManager->getRepository(User::class);
         if ($attribute == 'username') {
             $newUsername = $request->request->get('username');
             $existingUser = $users->findOneBy(['username' => $newUsername]);

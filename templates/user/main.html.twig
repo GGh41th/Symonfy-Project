@@ -1,90 +1,81 @@
 <style>
- 	.container {
- 		margin-left: 70px;
- 	}
- 	table {
- 		width: 90%;
- 		border-collapse: collapse;
- 	}
- 	th {
- 		background-color: #aaaaaa;
- 		color: #333;
- 		border: 1px solid #ddd;
- 		padding: 8px;
- 		text-align: left;
- 	}
- 	td {
- 		border: 1px solid #aaaaaa;
- 		padding: 20px 10px;
- 		font-weight: 500;
- 	}
- 	.main-title {
- 		color: white;
- 		font-size: 50px;
- 		margin-bottom: 10px;
- 	}
- 	.secondary-title {
- 		color: white;
- 		font-size: 30px;
- 		margin-bottom: 60px;
- 	}
- 	.success {
- 		color: green;
- 	}
- 	.overdue {
- 		color: red;
- 	}
- </style>
+    .container {
+        margin-left: 65px;
+    }
 
- <div class='container'>
- 	<div>
- 		<h1 class="main-title">welcome back {user}</h1>
- 		<h2 class="secondary-title">you have 1 out of 3 tasks completed</h2>
- 		<div>
+    table {
+        width: 90%;
+        border-collapse: collapse;
+    }
 
- 			<table>
- 				<tr>
- 					<th>task Title</th>
- 					<th>Task description
- 					</th>
- 					<th>end date</th>
- 					<th>status</th>
+    th {
+        background-color: #aaaaaa;
+        color: #333;
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
 
- 				</tr>
- 				<tr>
- 					<td>Attend tech conference</td>
- 					<td>participate in stuff</td>
- 					<td>2020-12-12</td>
- 					<td class='success'>completed</td>
- 				</tr>
- 				<tr>
- 					<td>optimize the database tables</td>
- 					<td>improve performance by optilizing sql queries</td>
- 					<td>2020-1-37</td>
- 					<td class='overdue'>overdue</td>
- 				</tr>
- 				<tr>
- 					<td>optimize the database tables</td>
- 					<td>improve performance by optilizing sql queries</td>
- 					<td>2020-1-37</td>
- 					<td class='overdue'>overdue</td>
- 				</tr>
- 				<tr>
- 					<td>optimize the database tables</td>
- 					<td>improve performance by optilizing sql queries</td>
- 					<td>2020-1-37</td>
- 					<td class='overdue'>overdue</td>
- 				</tr>
- 				<tr>
- 					<td>Attend tech conference</td>
- 					<td>participate in stuff</td>
- 					<td>2020-12-12</td>
- 					<td class='success'>completed</td>
- 				</tr>
+    td {
+        border: 1px solid #aaaaaa;
+        padding: 20px 10px;
+        font-weight: 500;
+    }
 
- 			</table>
- 		</div>
- 	</div>
+    .main-title {
+        color: white;
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    .secondary-title {
+        color: white;
+        font-size: 30px;
+        margin-bottom: 60px;
+    }
+
+    .finished {
+        color: green;
+    }
+
+    .overdue {
+        color: red;
+    }
+
+    .pending {
+        color: yellow;
+    }
+</style>
+
+<div class = 'container'>
+    <div>
+        <h1 class = "main-title">Welcome back {{ user.username }}!</h1>
+        <h2 class = "secondary-title">You have {{ finished }} out of {{ total }} tasks completed.</h2>
+        <div>
+            {% if tasks %}
+                <table>
+                    <tr>
+                        <th>task Title</th>
+                        <th>Task description
+                        </th>
+                        <th>end date</th>
+                        <th>status</th>
+                    </tr>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.description }}</td>
+                            <td>{{ task.endDate | date('d-m-Y') }}</td>
+                            <td class = {{ task.status }}>{{ task.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h2>No tasks yet. Start creating tasks!</h2>
+            {% endif %}
+
+        </div>
+    </div>
 
 
- </div>
+</div>
