@@ -60,8 +60,8 @@
             <tr>
                 <td>Today</td>
                 {% if today.total !=0 %}
-                    <td>{{ today.finished*100 }} ({{ (today.finished/today.total)|number_format(2) }}%)</td>
-                    <td>{{ today.failed*100 }} ({{ (today.failed/today.total)|number_format(2) }}%)</td>
+                    <td>{{ today.finished }} ({{ (today.finished/today.total *100)|number_format(2) }}%)</td>
+                    <td>{{ today.failed }} ({{ (today.failed/today.total *100 )|number_format(2) }}%)</td>
                     <td>{{ today.total }}</td>
                 {% else %}
                     <td>0</td>

@@ -130,11 +130,17 @@ body {
     padding: 20px;
     width: calc(100% - 60px);
     height: 100vh;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     transition: 0.5s;
     opacity: 0;
     visibility: hidden;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
+
 
 .content.shown {
     opacity: 1;
