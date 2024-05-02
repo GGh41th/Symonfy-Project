@@ -2,7 +2,7 @@ const nav = document.querySelectorAll('.navigation-panel .nav-item');
 const indicator = document.querySelector('.indicator');
 const navState = [];
 for (let i = 0; i < nav.length; i++) {
-    navState.push({item: nav[i], inTransition: false});
+    navState.push({ item: nav[i], inTransition: false });
 }
 nav.forEach((item) => {
     if (item == nav[0]) {
@@ -27,13 +27,13 @@ for (let i = 0; i < nav.length; i++) {
 function setActive(item) {
     const container = document.querySelector('.content');
     const loadingDiv = document.querySelector('#loading');
-    container.innerHTML = "";
+    $(".content").html("");
     loadingDiv.classList.add("shown");
     $.ajax({
         type: "POST",
         url: "/" + item.getAttribute("data-url"),
         success: function (response) {
-            container.innerHTML = response;
+            $(".content").html(response);
             loadingDiv.classList.remove("shown");
         },
         error: function (xhr, status, error) {

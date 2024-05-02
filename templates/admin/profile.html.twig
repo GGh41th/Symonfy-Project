@@ -1,61 +1,186 @@
-	<style>
-		.image {
-			height: 180px;
-			width: 180px;
-			border-radius: 50%;
-			margin-bottom: 80px;
-		}
-		.icon {
-			color: black;
-		}
-		.margin-right {
-			margin-right: 40px
-		}
-		.margin-bottom {
-			margin-bottom: 20px;
-		}
+<style>
+    .image {
+        height: 180px;
+        width: 180px;
+        border-radius: 50%;
+        margin-bottom: 80px;
+    }
 
-		.secondary-text {
-			font-weight: 200;
+    .icon {
+        color: black;
+    }
 
-		}
-		.info-container {
-            width: 50%;
+    .margin-right {
+        margin-right: 40px
+    }
 
+    .margin-bottom {
+        margin-bottom: 20px;
+    }
+
+    .secondary-text {
+        font-weight: 200;
+
+    }
+
+    .info-container {
+        width: 50%;
+
+    }
+</style>
+<link href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel = "stylesheet">
+
+<div class = "d-flex flex-column m-5 p-5  justify-content-center align-items-center">
+    {% if user.image %}
+        <img class = "image" src = "{{ asset('assets/profile_images/'~ user.image) }}" alt = "">
+    {% else %}
+        <img class = "image" src = "{{ asset('assets/home/assets/img/avatar.png') }}" alt = "">
+    {% endif %}
+    <div class = "d-flex flex-column align-items-center justify-content-center info-container w-75">
+        <div class = "d-flex flex-row  margin-bottom justify-content-between w-100 align-items-center">
+            <h3 class = "margin-right">
+                username
+            </h3>
+            <h3 class = "margin-right secondary-text" id = "username">{{ user.username }}</h3>
+            <a class = "margin-right" href = "#" onclick = "updateUsername()">
+                <i class = "fas fa-edit icon text-white"></i>
+            </a>
+        </div>
+        <div class = "d-flex flex-row  margin-bottom justify-content-between align-items-center  w-100">
+            <h3 class = "margin-right">
+                email
+            </h3>
+            <h3 class = "margin-right secondary-text" id = "email">{{ user.email }}</h3>
+            <a class = "margin-right" href = "#" onclick = "updateMail()">
+                <i class = "fas fa-edit icon text-white"></i>
+            </a>
+        </div>
+        <div class = "d-flex flex-row   margin-bottom align-items-center justify-content-between  w-100">
+            <h3 class = "margin-right">
+                birthday
+            </h3>
+            <h3 class = "margin-right secondary-text" id = "birthday">{{ user.birthday | date("d-m-Y") }}</h3>
+            <a class = "margin-right" href = "#" onclick = "updateBirthdate()">
+                <i class = "fas fa-edit icon text-white"></i>
+            </a>
+        </div>
+        <div>
+            <h3>This user is an admin</h3>
+        </div>
+    </div>
+
+    <script>
+        if (typeof container === 'undefined') {
+            const container = document.querySelector('.content');
+
+            function checkUsername(username = "") {
+                const usernameRegex = /^[a-zA-Z0-9_]{5,}$/;
+                if (!usernameRegex.test(username)) {
+                    alert('Invalid username');
+                    return false;
+                }
+                return true;
+            }
+
+            function checkValidEmail(email = "") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Invalid email');
+                    return false;
+                }
+                return true;
+            }
+
+            function invalidDate(date) {
+                const [day, month, year] = date.split('-');
+                const dateObj = new Date(year, month - 1, day);
+                return dateObj.getDate() !== parseInt(day) || dateObj.getMonth() !== parseInt(month) - 1 || dateObj.getFullYear() !== parseInt(year);
+            }
+
+            function checkValidBirthday(birthday = "") {
+                const birthdayRegex = /^\d{2}-\d{2}-\d{4}$/;
+                if (!birthdayRegex.test(birthday) || invalidDate(birthday)) {
+                    alert('Invalid birthday');
+                    return false;
+                }
+                return true;
+            }
+
+            function updateUsername() {
+                const newUsername = prompt("Type a new username", container.querySelector("#username").textContent);
+                if (checkUsername(newUsername)) {
+                    $.ajax({
+                        url: "profile/update/username",
+                        type: 'POST',
+                        data: {
+                            username: newUsername
+                        },
+                        success: function (response) {
+                            if (response.message === 'Username updated successfully') {
+                                container.querySelector("#username").textContent = newUsername;
+                            } else if (response.message === 'Username already exists') {
+                                alert('Username already exists');
+                            } else {
+                                console.error('Error updating username');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            }
+
+            function updateMail() {
+                const newEmail = prompt("Type a new email", container.querySelector("#email").textContent);
+                if (checkValidEmail(newEmail)) {
+                    $.ajax({
+                        url: "profile/update/email",
+                        type: 'POST',
+                        data: {
+                            email: newEmail
+                        },
+                        success: function (response) {
+                            if (response.message === 'Email updated successfully') {
+                                container.querySelector("#email").textContent = newEmail;
+                            } else if (response.message === 'Email already exists') {
+                                alert('Email already exists');
+                            } else {
+                                console.error('Error updating email');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            }
+
+            function updateBirthdate() {
+                const newBirthday = prompt("Type a new birthday", container.querySelector("#birthday").textContent);
+                if (checkValidBirthday(newBirthday)) {
+                    $.ajax({
+                        url: "profile/update/birthdate",
+                        type: 'POST',
+                        data: {
+                            birthday: newBirthday
+                        },
+                        success: function (response) {
+                            if (response.message === 'Birthday updated successfully') {
+                                container.querySelector("#birthday").textContent = newBirthday;
+                            } else {
+                                console.error('Error updating birthday');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            }
         }
-	</style>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-	<div class="d-flex flex-column m-5 p-5  justify-content-center align-items-center">
-		<img src="https://via.placeholder.com/150" alt="Placeholder Image" class="image">
-		<div class="d-flex flex-column align-items-center justify-content-center info-container w-75" >
-			<div class="d-flex flex-row  margin-bottom justify-content-between w-100 align-items-center">
-				<h3 class="margin-right">
-					username
-				</h3>
-				<h3 class="margin-right secondary-text">codingexpert</h3>
-				<a class="margin-right" href="/">
-					<i class="fas fa-edit icon text-white"></i>
-				</a>
-			</div>
-			<div class="d-flex flex-row  margin-bottom justify-content-between align-items-center  w-100">
-				<h3 class="margin-right">
-					email
-				</h3>
-				<h3 class="margin-right secondary-text">codingexpert@gmail.com</h3>
-				<a class="margin-right" href="/">
-					<i class="fas fa-edit icon text-white"></i>
-				</a>
-			</div>
-			<div class="d-flex flex-row   margin-bottom align-items-center justify-content-between  w-100">
-				<h3 class="margin-right">
-					birthday
-				</h3>
-				<h3 class="margin-right secondary-text">23-10-2011</h3>
-				<a class="margin-right" href="/">
-					<i class="fas fa-edit icon text-white"></i>
-				</a>
-			</div>
-		</div>
-	</div>
+    </script>
+
+</div>
 

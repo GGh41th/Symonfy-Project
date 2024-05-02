@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +13,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin', name: 'app_admin')]
 class AdminController extends AbstractController
 {
+
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/')]
     public function azesqd(Request $request): Response
     {
@@ -77,9 +88,81 @@ class AdminController extends AbstractController
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Your controller's code goes here */
+        $user = $this->getUser();
+        $userData = [
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'image' => $user->getProfileImage(),
+            'birthday' => $user->getBirthDate(),
+        ];
 
-        return $this->render('admin/profile.html.twig');
+        return $this->render('admin/profile.html.twig', [
+            'user' => $userData
+        ]);
+
     }
 
+    #[Route('/profile/update/{attribute}', name: 'user_update')]
+    public function updateUsername(Request $request, ManagerRegistry $managerRegistry, string $attribute): Response
+    {
+        if (!($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+
+        $users = $managerRegistry->getRepository(User::class);
+        if ($attribute == 'username') {
+            $newUsername = $request->request->get('username');
+            $existingUser = $users->findOneBy(['username' => $newUsername]);
+            if ($existingUser)
+                return $this->json([
+                    'status' => 'error',
+                    'message' => 'Username already exists'
+                ]);
+            $user = $this->getUser();
+            $user->setUsername($newUsername);
+            $this->entityManager->flush();
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Username updated successfully'
+            ]);
+        } elseif ($attribute == 'email') {
+            $newEmail = $request->request->get('email');
+            $existingUser = $users->findOneBy(['email' => $newEmail]);
+            if ($existingUser)
+                return $this->json([
+                    'status' => 'error',
+                    'message' => 'Email already exists'
+                ]);
+            $user = $this->getUser();
+            $user->setEmail($newEmail);
+            $this->entityManager->flush();
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Email updated successfully'
+            ]);
+        } elseif ($attribute == 'birthdate') {
+            $newBirthDate = \DateTimeImmutable::createFromFormat('d-m-Y', $request->request->get('birthday'));
+            if (($newBirthDate) instanceof \DateTimeImmutable) {
+                $user = $this->getUser();
+                $user->setBirthDate($newBirthDate);
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+                return $this->json([
+                    'status' => 'success',
+                    'message' => 'Birthday updated successfully',
+                ]);
+            } else {
+                return $this->json([
+                    'status' => 'error',
+                    'message' => 'Invalid date format',
+                    'birthdate' => $request->request->get('birthday')
+                ]);
+            }
+        }
+        return $this->json([
+            'status' => 'error',
+            'message' => 'Invalid attribute'
+        ]);
+    }
 }
+
