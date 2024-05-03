@@ -95,9 +95,125 @@ class AdminController extends AbstractController
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Your controller's code goes here */
+        $tasks = $this->entityManager->getRepository(Task::class)->findAll();
 
-        return $this->render('admin/dashboard.html.twig');
+        $todayTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastWeekTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastMonthTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $pendingTasks = 0;
+        foreach ($tasks as $task) {
+            $completionDate = $task->getCompletionDate();
+            $endDate = $task->getEndDate();
+            if ($completionDate) {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($completionDate);
+                if ($interval->days < 1) {
+                    $todayTasks["finished"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["finished"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["finished"]++;
+                }
+            } else {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($endDate);
+                if ($task->getStatus() == "Pending") {
+                    $pendingTasks++;
+                } else if ($interval->days < 1) {
+                    $todayTasks["failed"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["failed"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["failed"]++;
+                }
+            }
+
+        }
+        $todayTasks["total"] = $todayTasks["finished"] + $todayTasks["failed"];
+        $lastWeekTasks["total"] = $lastWeekTasks["finished"] + $lastWeekTasks["failed"];
+        $lastMonthTasks["total"] = $lastMonthTasks["finished"] + $lastMonthTasks["failed"];
+        $activeUserCount = $this->entityManager->createQuery('
+            SELECT COUNT(DISTINCT t.user_id)
+            FROM App\Entity\Task t
+        ');
+        $activeUserCount = $activeUserCount->getSingleScalarResult();
+        $finishedTasksCount = $this->entityManager->getRepository(Task::class)->findBy(['status' => 'Finished']);
+        $finishedTasksCount = count($finishedTasksCount);
+        if ($finishedTasksCount == 0)
+            $average = 0;
+        else
+            $average = $finishedTasksCount / $activeUserCount;
+
+        return $this->render('admin/dashboard.html.twig', [
+            'today' => $todayTasks,
+            'lastWeek' => $lastWeekTasks,
+            'lastMonth' => $lastMonthTasks,
+            'pending' => $pendingTasks,
+            'average' => $average
+        ]);
+    }
+
+    #[Route('/search_stats')]
+    public function searchStats(Request $request): response
+    {
+        if (!($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $username = $request->request->get('username');
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+        if (!$user)
+            return $this->json([
+                'status' => 'error',
+                'message' => 'This user does not exist!',
+            ]);
+        if ($user->getRole() == "admin")
+            return $this->json([
+                'status' => 'error',
+                'message' => 'This user is an admin!'
+            ]);
+        $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $user->getId()]);
+        $todayTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastWeekTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastMonthTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $pendingTasks = 0;
+        foreach ($tasks as $task) {
+            $completionDate = $task->getCompletionDate();
+            $endDate = $task->getEndDate();
+            if ($completionDate) {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($completionDate);
+                if ($interval->days < 1) {
+                    $todayTasks["finished"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["finished"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["finished"]++;
+                }
+            } else {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($endDate);
+                if ($task->getStatus() == "Pending") {
+                    $pendingTasks++;
+                } else if ($interval->days < 1) {
+                    $todayTasks["failed"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["failed"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["failed"]++;
+                }
+            }
+
+        }
+        $todayTasks["total"] = $todayTasks["finished"] + $todayTasks["failed"];
+        $lastWeekTasks["total"] = $lastWeekTasks["finished"] + $lastWeekTasks["failed"];
+        $lastMonthTasks["total"] = $lastMonthTasks["finished"] + $lastMonthTasks["failed"];
+
+        return $this->render('user/stats.html.twig', [
+            'today' => $todayTasks,
+            'lastWeek' => $lastWeekTasks,
+            'lastMonth' => $lastMonthTasks,
+            'pending' => $pendingTasks,
+        ]);
     }
 
     #[Route('/users', name: 'app_admin_users')]
@@ -116,8 +232,6 @@ class AdminController extends AbstractController
     {
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
-
-        /* Your controller's code goes here */
 
         return $this->render('admin/logout_page.html.twig');
     }

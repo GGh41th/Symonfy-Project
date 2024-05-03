@@ -248,11 +248,7 @@ class UserController extends AbstractController
         $todayTasks["total"] = $todayTasks["finished"] + $todayTasks["failed"];
         $lastWeekTasks["total"] = $lastWeekTasks["finished"] + $lastWeekTasks["failed"];
         $lastMonthTasks["total"] = $lastMonthTasks["finished"] + $lastMonthTasks["failed"];
-        $testDate = new \DateTime();
-        $testDate->modify('-1 week');
-        $testDate2 = new \DateTime();
-        $testDate2->modify('-1 month');
-        $diff = $testDate->diff($testDate2);
+
         return $this->render('user/stats.html.twig', [
             'today' => $todayTasks,
             'lastWeek' => $lastWeekTasks,

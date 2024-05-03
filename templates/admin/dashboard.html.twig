@@ -1,112 +1,167 @@
 <style>
-	.container {
-		margin-left: 70px;
-		margin-top: 70px;
+    .container {
+        margin-left: 70px;
+        margin-top: 70px;
         display: flex;
         flex-direction: column;
         gap: 40px;
-	}
-	table {
-		width: 100%;
-		border-collapse: collapse;
-		background-color: #333;
-		color: #fff;
-	}
-	th {
-		background-color: #444;
-		color: #fff;
-		border: 1px solid #555;
-		padding: 8px;
-	}
-	td {
-		border: 1px solid #555;
-		padding: 8px;
-	}
-	tr:nth-child(even) {
-		background-color: #555;
-	}
-	td:nth-child(1) {
-		text-align: left;
-		font-weight: 600;
-	}
-	tr:hover {
-		opacity: 0.7;
-	}
-	th,
-	td {
-		text-align: center;
-		padding: 20px 10px;
-	}
-    .but
-    {
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #333;
+        color: #fff;
+    }
+
+    th {
+        background-color: #444;
+        color: #fff;
+        border: 1px solid #555;
+        padding: 8px;
+    }
+
+    td {
+        border: 1px solid #555;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #555;
+    }
+
+    td:nth-child(1) {
+        text-align: left;
+        font-weight: 600;
+    }
+
+    tr:hover {
+        opacity: 0.7;
+    }
+
+    th,
+    td {
+        text-align: center;
+        padding: 20px 10px;
+    }
+
+    .but {
         padding: 10px;
         background-color: #444;
         color: #fff;
         border: none;
         cursor: pointer;
-    
+
     }
-    .search
-    {
-        padding:8px 10px;
+
+    .search {
+        padding: 8px 10px;
         width: 300px;
         margin-right: 10px;
         background-color: #444;
         color: #fff;
+        outline: none;
     }
 </style>
 
-<div class='container'>
+<div class = 'container'>
     <h1>Overall Statistics</h1>
-	<div>
-		<table>
-
-			<tr>
-				<th></th>
-				<th>Tasks Done</th>
-				<th>Tasks Failed</th>
-				<th>Total</th>
-			</tr>
-			<tr>
-				<td>Today</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-			</tr>
-			<tr>
-				<td>Last week</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-			</tr>
-			<tr>
-				<td>Last month</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-				<td>0(0%)</td>
-			</tr>
-			<tr>
-				<td>Pending tasks</td>
-				<td></td>
-				<td></td>
-				<td>23</td>
-			</tr>
-            <tr>
-				<td>Average Tasks per user</td>
-				<td></td>
-				<td></td>
-				<td> 1.4</td>
-			</tr>
-		</table>
-        
-	</div>
-    <h2>Statistics for a specific User</h2>
     <div>
-    <input class="search" placeholder="type user name"/>
-    <button class="but">Search</button>
-    
+        <table>
+
+            <tr>
+                <th></th>
+                <th>Tasks Done</th>
+                <th>Tasks Failed</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>Today</td>
+                {% if today.total !=0 %}
+                    <td>{{ today.finished }} ({{ (today.finished/today.total *100)|number_format(2) }}%)</td>
+                    <td>{{ today.failed }} ({{ (today.failed/today.total *100 )|number_format(2) }}%)</td>
+                    <td>{{ today.total }}</td>
+                {% else %}
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Last week</td>
+                {% if lastWeek.total !=0 %}
+                    <td>{{ lastWeek.finished }} ({{ (lastWeek.finished/lastWeek.total*100)|number_format(2) }}%)
+                    </td>
+                    <td>{{ lastWeek.failed }} ({{ (lastWeek.failed/lastWeek.total*100)|number_format(2) }}%)</td>
+                    <td>{{ lastWeek.total }}</td>
+                {% else %}
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Last month</td>
+                {% if lastMonth.total !=0 %}
+                    <td>{{ lastMonth.finished }} ({{ (lastMonth.finished/lastMonth.total *100)|number_format(2) }}
+                                                 %)
+                    </td>
+                    <td>{{ lastMonth.failed }} ({{ (lastMonth.failed/lastMonth.total *100)|number_format(2) }}%)
+                    </td>
+                    <td>{{ lastMonth.total }}</td>
+                {% else %}
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Pending tasks</td>
+                <td></td>
+                <td></td>
+                <td>{{ pending }}</td>
+            </tr>
+            <tr>
+                <td>Finished Tasks per user</td>
+                <td></td>
+                <td></td>
+                <td>{{ (average) |number_format(2) }}</td>
+            </tr>
+        </table>
+
     </div>
-
-
-
+    <h2>Statistics for a specific User</h2>
+    <div style = "padding-bottom:  100px">
+        <input class = "search" placeholder = "type user name"/>
+        <button class = "but" onclick = "search()">Search</button>
+    </div>
 </div>
+
+<script>
+    if (typeof dashboardAdminPage === 'undefined') {
+        const dashboardAdminPage = true;
+
+        function search() {
+            const search = document.querySelector('.search').value.trim();
+            if (search.length == 0) {
+                alert('Please enter a username');
+                return;
+            }
+            $.ajax({
+                url: '/admin/search_stats',
+                type: 'POST',
+                data: {
+                    username: search
+                },
+                success: function (response) {
+                    if (response.status === 'error') {
+                        alert(response.message);
+                    } else {
+                        $('.content').html(response);
+                    }
+                }
+            });
+
+        }
+    }
+</script>
