@@ -1,89 +1,73 @@
 <style>
-	.container {
-		margin-left: 70px;
-		margin-top: 70px;
+    .container {
+        margin-left: 70px;
+        margin-top: 70px;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-	}
     table {
-		width: 100%;
-		border-collapse: collapse;
-		background-color: #333;
-		color: #fff;
-	}
-	th {
-		background-color: #222222;
-		color: #fff;
-		border: 1px solid #555;
-		padding: 8px;
-	}
-	td {
-		border: 1px solid #555;
-		padding: 8px;
-	}
-	tr:nth-child(even) {
-		background-color: #555;
-	}
-	td:nth-child(1) {
-		text-align: left;
-		font-weight: 600;
-	}
-	tr:hover {
-		opacity: 0.7;
-	}
-	th,
-	td {
-		text-align: center;
-		padding: 20px 10px;
-	}
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #333;
+        color: #fff;
+    }
+
+    th {
+        background-color: #222222;
+        color: #fff;
+        border: 1px solid #555;
+        padding: 8px;
+    }
+
+    td {
+        border: 1px solid #555;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #555;
+    }
+
+    td:nth-child(1) {
+        text-align: left;
+        font-weight: 600;
+    }
+
+    tr:hover {
+        opacity: 0.7;
+    }
+
+    th,
+    td {
+        text-align: center;
+        padding: 20px 10px;
+    }
 </style>
 
-<div class='container'>
+<div class = 'container'>
 
-	<h1></h1>
-	<table>
+    <h1></h1>
+    {% if feedbacks %}
+        <table>
+            <tr>
+                <th>Submission text</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Date</th>
+            </tr>
+            {% for feedback in feedbacks %}
 
-		<tr>
-            <th>Submission Text</th>
-            <th>User Name</th>
-            <th>Email</th>
-            <th>Date</th>
-        </tr>
-        <tr>
-            <td>Feedback 1</td>
-            <td>John Doe</td>
-            <td>johndoe@example.com</td>
-            <td>2022-01-01</td>
-        </tr>
-        <tr>
-            <td>Feedback 2</td>
-            <td>Jane Smith</td>
-            <td>janesmith@example.com</td>
-            <td>2022-01-02</td>
-        </tr>
-        <tr>
-            <td>Feedback 3</td>
-            <td>Mike Johnson</td>
-            <td>mikejohnson@example.com</td>
-            <td>2022-01-03</td>
-        </tr>
-        <tr>
-            <td>Feedback 4</td>
-            <td>Sarah Williams</td>
-            <td>sarahwilliams@example.com</td>
-            <td>2022-01-04</td>
-        </tr>
-        <tr>
-            <td>Feedback 5</td>
-            <td>David Brown</td>
-            <td>davidbrown@example.com</td>
-            <td>2022-01-05</td>
-        </tr>
-        <tr>
-            <td>Feedback 6</td>
-            <td>Emily Davis</td>
-            <td>emilydavis@example.com</td>
-            <td>2022-01-06</td>
-        </tr>
-
+                <tr>
+                    <td>{{ feedback.message }}</td>
+                    <td>{{ feedback.user }}</td>
+                    <td>{{ feedback.email }}</td>
+                    <td>{{ feedback.creationDate | date("d-m-Y") }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h1>No feedbacks yet</h1>
+    {% endif %}
 
 </div>

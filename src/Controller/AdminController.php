@@ -61,12 +61,15 @@ class AdminController extends AbstractController
         $feedbacksData = [];
         foreach ($feedbacks as $feedback) {
             $user_id = $feedback->getUserId();
-            $user = $this->entityManager->getRepository(User::class)->find($user_id);
+            $user_entity = $this->entityManager->getRepository(User::class)->find($user_id);
+            $username = $user_entity->getUsername();
+            $email = $user_entity->getEmail();
             $feedbacksData[] = [
                 'id' => $feedback->getId(),
-                'user' => $user,
+                'user' => $username,
                 'message' => $feedback->getSubmissionText(),
-                'date' => $feedback->getDate(),
+                'creationDate' => $feedback->getDate(),
+                'email' => $email
             ];
         }
         return $feedbacksData;
@@ -139,9 +142,11 @@ class AdminController extends AbstractController
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Your controller's code goes here */
+        $feedbacks = $this->getFeedbacks();
 
-        return $this->render('admin/feedbacks.html.twig');
+        return $this->render('admin/feedbacks.html.twig', [
+            'feedbacks' => $feedbacks
+        ]);
     }
 
     #[Route('/profile', name: 'app_admin_profile')]

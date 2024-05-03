@@ -137,8 +137,6 @@ body {
     visibility: hidden;
     display: flex;
     justify-content: center;
-    flex-direction: column;
-    align-items: center;
 }
 
 .content.shown {
