@@ -45,11 +45,19 @@ class AdminController extends AbstractController
         $users = $this->entityManager->getRepository(User::class)->findAll();
         $usersData = [];
         foreach ($users as $user) {
+            $birthdate = $user->getBirthDate();
+            $age = $birthdate->diff(new \DateTime())->y;
+            $taskFinishedByUser = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $user->getId(), 'status' => 'Finished']);
+            $totalTasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $user->getId()]);
             $usersData[] = [
                 'id' => $user->getId(),
                 'username' => $user->getUsername(),
                 'email' => $user->getEmail(),
                 'role' => $user->getRole(),
+                'image' => $user->getProfileImage(),
+                'age' => $age,
+                'taskFinished' => count($taskFinishedByUser),
+                'totalTasks' => count($totalTasks)
             ];
         }
         return $usersData;
@@ -98,9 +106,9 @@ class AdminController extends AbstractController
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Your controller's code goes here */
-
-        return $this->render('admin/users.html.twig');
+        return $this->render('admin/users.html.twig', [
+            'users' => $this->getUsers()
+        ]);
     }
 
     #[Route('/logout_page', name: 'app_admin_logout_page')]
@@ -231,5 +239,43 @@ class AdminController extends AbstractController
             'message' => 'Invalid attribute'
         ]);
     }
-}
 
+    #[Route('/userdelete')]
+    public function deleteUser(Request $request): Response
+    {
+        if (!($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $user_id = $request->request->get('id');
+        $user = $this->entityManager->getRepository(User::class)->find($user_id);
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+        return $this->json([
+            'status' => 'success',
+            'message' => 'User deleted successfully'
+        ]);
+
+
+    }
+
+    #[Route('/visituser')]
+    public function visitUser(Request $request): Response
+    {
+        if (!($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        $user_id = $request->request->get('id');
+        $user = $this->entityManager->getRepository(User::class)->find($user_id);
+        $userData = [
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'image' => $user->getProfileImage(),
+            'birthday' => $user->getBirthDate(),
+        ];
+
+        return $this->render('user/profile.html.twig', [
+            'user' => $userData,
+            'nochange' => true
+        ]);
+    }
+}

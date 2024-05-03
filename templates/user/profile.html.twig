@@ -47,27 +47,36 @@
                 username
             </h3>
             <h3 class = "margin-right secondary-text" id = "username">{{ user.username }}</h3>
-            <a class = "margin-right" href = "#" onclick = "updateUsername()">
-                <i class = "fas fa-edit icon text-white"></i>
-            </a>
+            {% if nochange %}
+            {% else %}
+                <a class = "margin-right" href = "#" onclick = "updateUsername()">
+                    <i class = "fas fa-edit icon text-white"></i>
+                </a>
+            {% endif %}
         </div>
         <div class = "d-flex flex-row  margin-bottom justify-content-between align-items-center  w-100">
             <h3 class = "margin-right">
                 email
             </h3>
             <h3 class = "margin-right secondary-text" id = "email">{{ user.email }}</h3>
-            <a class = "margin-right" href = "#" onclick = "updateMail()">
-                <i class = "fas fa-edit icon text-white"></i>
-            </a>
+            {% if nochange %}
+            {% else %}
+                <a class = "margin-right" href = "#" onclick = "updateMail()">
+                    <i class = "fas fa-edit icon text-white"></i>
+                </a>
+            {% endif %}
         </div>
         <div class = "d-flex flex-row   margin-bottom align-items-center justify-content-between  w-100">
             <h3 class = "margin-right">
                 birthday
             </h3>
             <h3 class = "margin-right secondary-text" id = "birthday">{{ user.birthday | date('d-m-Y') }}</h3>
-            <a class = "margin-right" href = "#" onclick = "updateBirthdate()">
-                <i class = "fas fa-edit icon text-white"></i>
-            </a>
+            {% if nochange %}
+            {% else %}
+                <a class = "margin-right" href = "#" onclick = "updateBirthdate()">
+                    <i class = "fas fa-edit icon text-white"></i>
+                </a>
+            {% endif %}
         </div>
     </div>
 </div>
