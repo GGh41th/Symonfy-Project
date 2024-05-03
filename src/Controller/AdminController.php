@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\FeedBack;
+use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,8 +22,58 @@ class AdminController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    public function getTasks(): array
+    {
+        $tasks = $this->entityManager->getRepository(Task::class)->findAll();
+        $tasksData = [];
+        foreach ($tasks as $task) {
+            $tasksData[] = [
+                'id' => $task->getId(),
+                'title' => $task->getTitle(),
+                'description' => $task->getDescription(),
+                'status' => $task->getStatus(),
+                'created_date' => $task->getCreationDate(),
+                'completion_date' => $task->getCompletionDate(),
+                'end_date' => $task->getEndDate()
+            ];
+        }
+        return $tasksData;
+    }
+
+    public function getUsers(): array
+    {
+        $users = $this->entityManager->getRepository(User::class)->findAll();
+        $usersData = [];
+        foreach ($users as $user) {
+            $usersData[] = [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'role' => $user->getRole(),
+            ];
+        }
+        return $usersData;
+    }
+
+    public function getFeedbacks(): array
+    {
+        $feedbacks = $this->entityManager->getRepository(Feedback::class)->findAll();
+        $feedbacksData = [];
+        foreach ($feedbacks as $feedback) {
+            $user_id = $feedback->getUserId();
+            $user = $this->entityManager->getRepository(User::class)->find($user_id);
+            $feedbacksData[] = [
+                'id' => $feedback->getId(),
+                'user' => $user,
+                'message' => $feedback->getSubmissionText(),
+                'date' => $feedback->getDate(),
+            ];
+        }
+        return $feedbacksData;
+    }
+
     #[Route('/')]
-    public function azesqd(Request $request): Response
+    public function redirecthome(Request $request): Response
     {
         return $this->redirect('/home');
     }
@@ -65,9 +117,20 @@ class AdminController extends AbstractController
         if (!($this->getUser()) || $this->getUser()->getRole() != "admin" || !($request->isXmlHttpRequest()))
             return $this->redirectToRoute('home_screen');
 
-        /* Your controller's code goes here */
-
-        return $this->render('admin/main.html.twig');
+        $tasks = $this->getTasks();
+        $finishedCount = 0;
+        foreach ($tasks as $task) {
+            if ($task['status'] == "Finished")
+                $finishedCount++;
+        }
+        return $this->render('admin/main.html.twig',
+            [
+                "usercount" => count($this->getUsers()),
+                "taskcount" => count($tasks),
+                "finishedcount" => $finishedCount,
+                "feedbackcount" => count($this->getFeedbacks()),
+                "username" => $this->getUser()->getUsername(),
+            ]);
     }
 
     #[Route('/feedbacks', name: 'app_admin_feedbacks')]
