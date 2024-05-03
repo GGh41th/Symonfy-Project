@@ -118,7 +118,8 @@
 </div>
 
 <script>
-    if (typeof usersScript === 'undefined') {
+    if (typeof usersPageAdmin === 'undefined') {
+        var usersPageAdmin = true;
         function deleteUser(id) {
             if (confirm('Are you sure you want to delete this user?')) {
                 $.ajax({

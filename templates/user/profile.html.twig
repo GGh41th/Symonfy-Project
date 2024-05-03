@@ -81,7 +81,8 @@
     </div>
 </div>
 <script>
-    if (typeof container === 'undefined') {
+    if (typeof profilePageUser === 'undefined') {
+        const profilePageUser = true;
         const container = document.querySelector('.content');
 
         function checkUsername(username = "") {

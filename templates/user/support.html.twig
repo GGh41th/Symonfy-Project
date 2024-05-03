@@ -74,7 +74,8 @@
 </div>
 
 <script>
-    if (typeof resultFeedback === 'undefined') {
+    if (typeof supportPageUser === 'undefined') {
+        const supportPageUser=true;
         function checkValidFeedback() {
             return textareaFeedback.value.trim().length > 0;
         }

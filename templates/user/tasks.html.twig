@@ -216,8 +216,8 @@
 
 
 <script>
-    if (typeof alphaSorting === "undefined") {
-
+    if (typeof tasksPageUser === "undefined") {
+        const tasksPageUser = true;
         function filterTasks() {
             const searchInput = document.querySelector(".search-input");
             const searchValue = searchInput.value.toLowerCase();

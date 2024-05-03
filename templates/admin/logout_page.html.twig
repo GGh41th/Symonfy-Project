@@ -43,9 +43,8 @@
 </div>
 
 <script>
-    if (typeof a === 'undefined') {
-        const a = 0;
-
+    if (typeof logoutPageAdmin === 'undefined') {
+        const logoutPageAdmin = true;
         function quit() {
             $.ajax({
                 url: '/logout',
