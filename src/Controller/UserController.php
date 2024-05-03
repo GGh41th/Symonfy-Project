@@ -115,6 +115,7 @@ class UserController extends AbstractController
 
         return $this->render('user/profile.html.twig', [
             'user' => $userData,
+            "nochange" => false
         ]);
     }
 
@@ -257,6 +258,7 @@ class UserController extends AbstractController
             'lastWeek' => $lastWeekTasks,
             'lastMonth' => $lastMonthTasks,
             'pending' => $pendingTasks,
+            'user' => $this->getUser(),
         ]);
     }
 
