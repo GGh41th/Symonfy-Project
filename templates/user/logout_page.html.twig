@@ -1,6 +1,60 @@
-<div> 
+<style>
+    .container {
+        text-align: center;
+    }
 
-<h1> Please edit me, this page is a place holder! </h1>
-<h1> I am located at: <b> templates/user/logout_page.html.twig </b> </h1>
-<h1> My controller is located at: <b> src/Controller/UserController.php </b> </h1>
-</div
+    .button-div {
+        display: flex;
+        justify-content: space-around;
+        gap: 30px;
+    }
+
+    .btn {
+        background: green;
+        width: 45%;
+        padding: 20px;
+        font-size: 30px;
+        color: white;
+        background: transparent;
+        border: 2px solid white;
+    }
+
+    .btn.danger {
+        border: 2px solid red;
+    }
+
+    .btn.danger:hover {
+        background: red;
+        color: white;
+    }
+
+    .btn:hover {
+        background: white;
+        color: black;
+    }
+</style>
+
+<div class = "container">
+    <h1 class = "my-5">Are you sure you want to log out?</h1>
+    <div class = "button-div">
+        <a class = "btn" id = "noButton" onclick = "location.reload()">No</a>
+        <a class = "btn danger" id = "yesButton" onclick = "quit()">Yes</a>
+    </div>
+</div>
+
+<script>
+    if (typeof a === 'undefined') {
+        const a = 0;
+
+        function quit() {
+            $.ajax({
+                url: '/logout',
+                type: 'POST',
+                success: function () {
+                    window.location.href = '/';
+                }
+            });
+        }
+    }
+
+</script>
