@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use TCPDF;
 
 #[Route('/user', name: 'app_user')]
 class UserController extends AbstractController
@@ -77,6 +78,53 @@ class UserController extends AbstractController
             'finished' => $completedTasks,
         ]);
     }
+
+
+
+    #[Route('/tasks/pdf', name: 'export_pdf', methods: ['POST','GET'])]
+    public function exportPdf()
+    {
+        $tasks = $this->getTasks();
+        $tasksData = [];
+        $completedTasks = 0;
+        $totalTasks = count($tasks);
+        foreach ($tasks as $task) {
+            $taskData = [
+                'id' => $task->getId(),
+                'title' => $task->getTitle(),
+                'description' => $task->getDescription(),
+                'status' => $task->getStatus(),
+                'endDate' => $task->getEndDate(),
+            ];
+            if ($task->getStatus() == "Finished") {
+                $completedTasks++;
+            }
+            array_push($tasksData, $taskData);
+        }
+        $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+
+        $pdf->SetTitle('Tasks Report');
+
+        $pdf->AddPage();
+
+        $pdf->SetFillColor(105 , 105, 105); // Grey color
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight(), 'F');
+
+        $html = $this->renderView('user/main.html.twig', [
+            'tasks' => $tasks,
+            'user' => $this->getUser(),
+            'total' => $totalTasks,
+            'finished' => $completedTasks,
+        ]);
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        $pdf->Output('Tasks.pdf', 'D');
+
+        return new Response();
+    }
+
+
+
 
     #[Route('/task/generaterandom', name: 'app_user_task_add')]
     public function generateRandom(): Response
@@ -206,6 +254,91 @@ class UserController extends AbstractController
         ]);
     }
 
+
+    #[Route('/stats', name: 'app_user_stats')]
+    public function stats(Request $request): Response
+    {
+        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+            return $this->redirectToRoute('home_screen');
+
+        // Process tasks data for stats page
+        $tasksData = $this->processTasksData();
+
+        return $this->render('user/stats.html.twig', $tasksData);
+    }
+
+    #[Route('/stats/pdf', name: 'app_user_stats_pdf')]
+    public function exportStatsPdf(): Response
+    {
+        // Process tasks data for PDF export
+        $tasksData = $this->processTasksData();
+
+        // Generate PDF
+        $pdf = new TCPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetTitle('Stats Report');
+        $pdf->AddPage();
+
+        $pdf->SetFillColor(105 , 105, 105); // Grey color
+        $pdf->Rect(0, 0, $pdf->getPageWidth(), $pdf->getPageHeight(), 'F');
+
+        $html = $this->renderView('user/stats.html.twig', $tasksData);
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->Output('Stats.pdf', 'D');
+
+        return new Response();
+    }
+
+    private function processTasksData(): array
+    {
+        $tasks = $this->getTasks();
+        $todayTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastWeekTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $lastMonthTasks = ["finished" => 0, "failed" => 0, "total" => 0];
+        $pendingTasks = 0;
+
+        foreach ($tasks as $task) {
+            $completionDate = $task->getCompletionDate();
+            $endDate = $task->getEndDate();
+            if ($completionDate) {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($completionDate);
+                if ($interval->days < 1) {
+                    $todayTasks["finished"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["finished"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["finished"]++;
+                }
+            } else {
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($endDate);
+                if ($task->getStatus() == "Pending") {
+                    $pendingTasks++;
+                } elseif ($interval->days < 1) {
+                    $todayTasks["failed"]++;
+                } elseif ($interval->days < 7) {
+                    $lastWeekTasks["failed"]++;
+                } elseif ($interval->days < 30) {
+                    $lastMonthTasks["failed"]++;
+                }
+            }
+        }
+
+        $todayTasks["total"] = $todayTasks["finished"] + $todayTasks["failed"];
+        $lastWeekTasks["total"] = $lastWeekTasks["finished"] + $lastWeekTasks["failed"];
+        $lastMonthTasks["total"] = $lastMonthTasks["finished"] + $lastMonthTasks["failed"];
+
+        return [
+            'today' => $todayTasks,
+            'lastWeek' => $lastWeekTasks,
+            'lastMonth' => $lastMonthTasks,
+            'pending' => $pendingTasks,
+            'user' => $this->getUser(),
+        ];
+    }
+
+
+/*
     #[Route('/stats', name: 'app_user_stats')]
     public function stats(Request $request): Response
     {
@@ -257,6 +390,8 @@ class UserController extends AbstractController
             'user' => $this->getUser(),
         ]);
     }
+
+    */
 
     #[Route('/support', name: 'app_user_support')]
     public function support(Request $request): Response
@@ -390,10 +525,10 @@ class UserController extends AbstractController
             'message' => 'Task finished successfully'
         ]);
     }
-
+/*
     #[Route('/{value}')]
     public function value($value): Response
     {
         return $this->redirectToRoute('home_screen');
-    }
+    }*/
 }

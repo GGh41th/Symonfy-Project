@@ -45,12 +45,25 @@
     .pending {
         color: yellow;
     }
+
+    .link {
+        font-size: 20px;
+        color: white;
+        text-decoration: none;
+    }
+    a{
+        text-decoration-line: none;
+    }
+
 </style>
 
 <div class = 'container'>
     <div>
         <h1 class = "main-title">Welcome back {{ user.username }}!</h1>
         <h2 class = "secondary-title">You have {{ finished }} out of {{ total }} tasks completed.</h2>
+        <h5>
+            <a href="/user/tasks/pdf" class="secondary-title link ">Download Tasks as PDF</a>
+        </h5>
         <div>
             {% if tasks %}
                 <table>
@@ -76,6 +89,7 @@
 
         </div>
     </div>
+
 
 
 </div>
