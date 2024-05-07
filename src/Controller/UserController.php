@@ -438,97 +438,164 @@ class UserController extends AbstractController
     #[Route('/user/task/add')]
     public function addTask(Request $request): Response
     {
-        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
-            return $this->redirectToRoute('home_screen');
+        if (!$this->isUserLoggedIn() || $this->isAdminUser() || !$this->isXmlHttpRequest($request)) {
+            return $this->redirectToHomeScreen();
+        }
 
-        $title = $request->request->get('title');
-        $description = $request->request->get('description');
-        $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $request->request->get('date'));
-        $task = new Task();
-        $task->setTitle($title);
-        $task->setDescription($description);
-        $task->setStatus("Pending");
-        $task->setCreationDate(new \DateTime());
-        $task->setEndDate($endDate);
-        $task->setUserId($this->getUser());
-        $this->entityManager->persist($task);
-        $this->entityManager->flush();
-        return $this->json([
-            'status' => 'success',
-            'message' => 'Task added successfully'
-        ]);
+        $taskData = $this->extractTaskDataFromRequest($request);
+
+        $newTask = $this->createNewTask($taskData);
+
+        $this->saveTaskToDatabase($newTask);
+
+        return $this->jsonResponse("Task added successfully");
     }
 
     #[Route('/user/task/update', name: 'app_user_task_update')]
     public function updateTask(Request $request): Response
     {
-        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
-            return $this->redirectToRoute('home_screen');
+        if (!$this->isUserLoggedIn() || $this->isAdminUser() || !$this->isXmlHttpRequest($request)) {
+            return $this->redirectToHomeScreen();
+        }
 
         $taskId = $request->request->get('id');
-        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
-        if (!$task)
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Task not found'
-            ]);
-        $title = $request->request->get('title');
-        $description = $request->request->get('description');
-        $task->setTitle($title);
-        $task->setDescription($description);
-        $this->entityManager->flush();
-        return $this->json([
-            'status' => 'success',
-            'message' => 'Task updated successfully'
-        ]);
+        $task = $this->findTaskById($taskId);
+
+        if (!$task) {
+            return $this->jsonResponse("Task not found", "error");
+        }
+
+        $taskData = $this->extractTaskDataFromRequest($request);
+
+        $this->updateTaskDetails($task, $taskData);
+
+        return $this->jsonResponse("Task updated successfully");
     }
 
     #[Route('/user/task/delete', name: 'app_user_task_delete')]
     public function deleteTask(Request $request): Response
     {
-        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
-            return $this->redirectToRoute('home_screen');
+        if (!$this->isUserLoggedIn() || $this->isAdminUser() || !$this->isXmlHttpRequest($request)) {
+            return $this->redirectToHomeScreen();
+        }
 
         $taskId = $request->request->get('id');
-        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
-        if (!$task)
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Task not found'
-            ]);
-        $this->entityManager->remove($task);
-        $this->entityManager->flush();
-        return $this->json([
-            'status' => 'success',
-            'message' => 'Task deleted successfully'
-        ]);
+        $task = $this->findTaskById($taskId);
+
+        if (!$task) {
+            return $this->jsonResponse("Task not found", "error");
+        }
+
+        $this->deleteTaskFromDatabase($task);
+
+        return $this->jsonResponse("Task deleted successfully");
     }
 
     #[Route('/user/task/finish', name: 'app_user_task_finish')]
     public function finishTask(Request $request): Response
     {
-        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
-            return $this->redirectToRoute('home_screen');
+        if (!$this->isUserLoggedIn() || $this->isAdminUser() || !$this->isXmlHttpRequest($request)) {
+            return $this->redirectToHomeScreen();
+        }
 
         $taskId = $request->request->get('id');
-        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
-        if (!$task)
-            return $this->json([
-                'status' => 'error',
-                'message' => 'Task not found'
-            ]);
+        $task = $this->findTaskById($taskId);
+
+        if (!$task) {
+            return $this->jsonResponse("Task not found", "error");
+        }
+
+        $this->finishTaskAndSaveCompletionDate($task);
+
+        return $this->jsonResponse("Task finished successfully");
+    }
+
+// Helper methods
+
+    private function isUserLoggedIn(): bool
+    {
+        return $this->getUser() !== null;
+    }
+
+    private function isAdminUser(): bool
+    {
+        return $this->getUser()->getRole() === "admin";
+    }
+
+    private function isXmlHttpRequest(Request $request): bool
+    {
+        return $request->isXmlHttpRequest();
+    }
+
+    private function redirectToHomeScreen(): RedirectResponse
+    {
+        return $this->redirectToRoute('home_screen');
+    }
+
+    private function extractTaskDataFromRequest(Request $request): array
+    {
+        return [
+            'title' => $request->request->get('title'),
+            'description' => $request->request->get('description'),
+            'date' => \DateTimeImmutable::createFromFormat('Y-m-d', $request->request->get('date'))
+        ];
+    }
+
+    private function createNewTask(array $taskData): Task
+    {
+        $newTask = new Task();
+        $newTask->setTitle($taskData['title']);
+        $newTask->setDescription($taskData['description']);
+        $newTask->setStatus("Pending");
+        $newTask->setCreationDate(new \DateTime());
+        $newTask->setEndDate($taskData['date']);
+        $newTask->setUserId($this->getUser());
+        return $newTask;
+    }
+
+    private function saveTaskToDatabase(Task $task): void
+    {
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+    }
+
+    private function findTaskById(int $taskId): ?Task
+    {
+        return $this->entityManager->getRepository(Task::class)->find($taskId);
+    }
+
+    private function updateTaskDetails(Task $task, array $taskData): void
+    {
+        $task->setTitle($taskData['title']);
+        $task->setDescription($taskData['description']);
+        $this->entityManager->flush();
+    }
+
+    private function deleteTaskFromDatabase(Task $task): void
+    {
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
+    }
+
+    private function finishTaskAndSaveCompletionDate(Task $task): void
+    {
         $task->setStatus("Finished");
         $task->setCompletionDate(new \DateTime());
         $this->entityManager->flush();
+    }
+
+    private function jsonResponse(string $message, string $status = 'success'): JsonResponse
+    {
         return $this->json([
-            'status' => 'success',
-            'message' => 'Task finished successfully'
+            'status' => $status,
+            'message' => $message
         ]);
     }
-/*
-    #[Route('/{value}')]
-    public function value($value): Response
-    {
-        return $this->redirectToRoute('home_screen');
-    }*/
+
+    /*
+        #[Route('/{value}')]
+        public function value($value): Response
+        {
+            return $this->redirectToRoute('home_screen');
+        }*/
 }
