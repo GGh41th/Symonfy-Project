@@ -23,21 +23,20 @@ class UserController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    private function getTasks(): array
+    private function updateOverdueTasks(): void
     {
         $userId = $this->getUser();
         $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $userId]);
+
+        $currentDate = new \DateTime();
         foreach ($tasks as $task) {
-            $currentDate = new \DateTime();
-            $endDate = $task->getEndDate();
-            $difference = $currentDate->diff($endDate);
-            if ($difference->days > 0 && $task->getStatus() == "Pending" && $endDate < $currentDate) {
+            if ($task->getStatus() === "Pending" && $task->getEndDate() < $currentDate) {
                 $task->setStatus("Overdue");
                 $this->entityManager->persist($task);
-                $this->entityManager->flush();
             }
         }
-        return $tasks;
+
+        $this->entityManager->flush();
     }
 
     #[Route('/')]
@@ -50,14 +49,16 @@ class UserController extends AbstractController
     #[Route('/main', name: 'app_user_main')]
     public function main(Request $request): Response
     {
-
-        if (!$this->getUser() || $this->getUser()->getRole() == "admin" || !($request->isXmlHttpRequest()))
+        if (!$this->getUser() || $this->getUser()->getRole() === "admin" || !($request->isXmlHttpRequest())) {
             return $this->redirectToRoute('home_screen');
+        }
 
-        $tasks = $this->getTasks();
+        $this->updateOverdueTasks();
+
+        $tasks = $this->entityManager->getRepository(Task::class)->findBy(['user_id' => $this->getUser()]);
+
         $tasksData = [];
         $completedTasks = 0;
-        $totalTasks = count($tasks);
         foreach ($tasks as $task) {
             $taskData = [
                 'id' => $task->getId(),
@@ -66,20 +67,19 @@ class UserController extends AbstractController
                 'status' => $task->getStatus(),
                 'endDate' => $task->getEndDate(),
             ];
-            if ($task->getStatus() == "Finished") {
+            if ($task->getStatus() === "Finished") {
                 $completedTasks++;
             }
-            array_push($tasksData, $taskData);
+            $tasksData[] = $taskData;
         }
+
         return $this->render('user/main.html.twig', [
-            'tasks' => $tasks,
+            'tasks' => $tasksData,
             'user' => $this->getUser(),
-            'total' => $totalTasks,
+            'total' => count($tasks),
             'finished' => $completedTasks,
         ]);
     }
-
-
 
     #[Route('/tasks/pdf', name: 'export_pdf', methods: ['POST','GET'])]
     public function exportPdf()
